@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Sud Italia RP — Livello Esperto</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom, rgba(10,10,10,0.55), rgba(10,10,10,0.85)), url('images/img4.webp') center/cover no-repeat;
+    }
+  </style>
+</head>
+<body class="text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+  <h1 class="text-4xl font-bold mb-6 text-center">Quiz Emergency Hamburg — Livello Esperto</h1>
+  <div id="quiz" class="w-full max-w-xl bg-white/10 rounded-xl p-6 shadow-lg backdrop-blur-sm">
+
+    <div id="question" class="text-xl mb-4"></div>
+
+    <div id="answers" class="flex flex-col gap-3"></div>
+
+    <button id="nextBtn" class="mt-4 px-4 py-2 bg-emerald-400 text-black font-semibold rounded-xl hover:bg-emerald-300 transition hidden">
+      Avanti
+    </button>
+
+    <div id="result" class="text-center text-emerald-300 text-2xl mt-6 hidden"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "Quale ruolo si occupa principalmente di spegnere incendi?", answers: ["EMS", "Polizia", "Vigili del Fuoco", "Meccanico"], correct: 2 },
+      { question: "Cosa significa FRP nel contesto RP?", answers: ["Fake Roleplay", "Fast Rescue Procedure", "Friendly Role Patrol", "First Response Protocol"], correct: 0 },
+      { question: "Qual è il codice per unirsi al server Sud Italia RP?", answers: ["abcd1234", "4adyrk4x", "rp2025", "hbgaming"], correct: 1 },
+      { question: "Quale azione è vietata secondo il regolamento RP?", answers: ["NLR", "FRP", "Uso di radio", "Arrivare in orario"], correct: 1 },
+      { question: "In quale città si svolge Emergency Hamburg?", answers: ["Berlino", "Amburgo", "Roma", "Monaco"], correct: 1 },
+      { question: "Cosa significa VDM?", answers: ["Vehicle Damage Management", "Vehicle Deathmatch", "Very Dangerous Mission", "Virtual Driving Mode"], correct: 1 },
+      { question: "Chi coordina gli eventi RP settimanali?", answers: ["Cittadini", "Staff/Moderatori", "Meccanici", "Autisti"], correct: 1 },
+      { question: "Quale regola RP vieta di usare informazioni ottenute fuori dal gioco?", answers: ["No Powergaming", "No Metagaming", "No FRP", "No Combat Logging"], correct: 1 },
+      { question: "Quale ruolo non esiste nel server Sud Italia RP?", answers: ["Autisti", "EMS", "Poliziotti", "Piloti di elicotteri civili"], correct: 3 },
+      { question: "Che cos’è il FearRP?", answers: ["Rispetto del realismo e della paura dei personaggi", "Un evento speciale RP", "Un tipo di veicolo", "Un comando di Roblox"], correct: 0 }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const nextBtn = document.getElementById('nextBtn');
+    const resultEl = document.getElementById('result');
+
+    function loadQuestion() {
+      answersEl.innerHTML = '';
+      nextBtn.classList.add('hidden');
+      questionEl.textContent = quizData[current].question;
+
+      quizData[current].answers.forEach((ans, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = ans;
+        btn.className = 'px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl transition text-left';
+        btn.onclick = () => selectAnswer(idx);
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(idx) {
+      const correctIdx = quizData[current].correct;
+      if(idx === correctIdx) {
+        score++;
+        answersEl.children[idx].classList.add('bg-emerald-400', 'text-black');
+      } else {
+        answersEl.children[idx].classList.add('bg-red-500');
+        answersEl.children[correctIdx].classList.add('bg-emerald-400', 'text-black');
+      }
+      Array.from(answersEl.children).forEach(b => b.disabled = true);
+      nextBtn.classList.remove('hidden');
+    }
+
+    nextBtn.onclick = () => {
+      current++;
+      if(current < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      questionEl.style.display = 'none';
+      answersEl.style.display = 'none';
+      nextBtn.style.display = 'none';
+      let badge = '';
+      if(score === quizData.length) badge = "🏆 Perfetto!";
+      else if(score >= quizData.length * 0.8) badge = "🎖 Ottimo lavoro!";
+      else if(score >= quizData.length * 0.5) badge = "👍 Buono!";
+      else badge = "😅 Ci vuole pratica...";
+      resultEl.innerHTML = `${badge}<br>Hai risposto correttamente a ${score} su ${quizData.length} domande!`;
+      resultEl.classList.remove('hidden');
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
